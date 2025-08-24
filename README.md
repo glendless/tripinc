@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Trip Inc.
 
 A travel agency dashboard to manage users and trips. This project serves as a comprehensive and intuitive platform for travel agencies to streamline their operations, offering robust features for managing user data and trip information.
@@ -25,6 +24,3 @@ A travel agency dashboard to manage users and trips. This project serves as a co
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-=======
-# tripinc
->>>>>>> 77b5c0278cb3eb887abc6163f856065611b013ed
