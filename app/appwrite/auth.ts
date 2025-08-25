@@ -11,7 +11,8 @@ export const getExistingUser = async (id: string) => {
         )
         return total > 0 ? documents[0] : null
     } catch (error) {
-        console.log('Error fetching user data:', error)
+        console.error('Error fetching user data:', error)
+        return null
     }
 }
 
@@ -20,7 +21,7 @@ export const storeUserData = async () => {
         const user = await account.get()
         if (!user) throw new Error('User not found')
 
-        const { providerAccessToken } = account.getSession('current') || {}
+        const { providerAccessToken } = (await account.getSession('current')) || {}
         const profilePicture = providerAccessToken ? await getGooglePicture(providerAccessToken) : null
 
         const createdUser = await database.createDocument(
@@ -36,9 +37,9 @@ export const storeUserData = async () => {
             }
         )
 
-        if (!createdUser) redirect('/sign-in')
+        if (!createdUser.$id) redirect('/sign-in')
     } catch (error) {
-        console.log('Error to store user data:', error)
+        console.error('Error to store user data:', error)
     }
 }
 
@@ -56,7 +57,7 @@ export const getGooglePicture = async (accessToken: string) => {
             return photos?.[0]?.url || null;
         }
     } catch (error) {
-        console.log('Error fetching Google Profile Picture:', error)
+        console.error('Error fetching Google Profile Picture:', error)
         return null;
     }
 }
@@ -68,7 +69,7 @@ export const loginWithGoogle = async () => {
             // `${window.location.origin}/404`
         )
     } catch (error) {
-        console.log('Error duting Oath2 session:', error)
+        console.error('Error duting Oath2 session:', error)
     }
 }
 
@@ -76,7 +77,7 @@ export const logoutUser = async () => {
     try {
         await account.deleteSession('current')
     } catch (error) {
-        console.log('Error during logout:', error)
+        console.error('Error during logout:', error)
     }
 }
 
@@ -96,13 +97,13 @@ export const getUser = async () => {
 
         return documents.length > 0 ? documents[0] : redirect('/sign-in')
     } catch (error) {
-        console.log('Error fetching user data:', error)
+        console.error('Error fetching user data:', error)
     }
 }
 
 export const getAllUsers = async (limit: number, offset: number) => {
     try {
-        const { documents: users, total } = database.listDocuments(
+        const { documents: users, total } = await database.listDocuments(
             appwriteConfig.databaseId,
             appwriteConfig.userCollectionId,
             [
@@ -115,6 +116,6 @@ export const getAllUsers = async (limit: number, offset: number) => {
         return { users, total }
 
     } catch (error) {
-        console.log('Error fetching user data:', error)
+        console.error('Error fetching user data:', error)
     }
 }
