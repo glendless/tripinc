@@ -117,5 +117,6 @@ export const getAllUsers = async (limit: number, offset: number) => {
 
     } catch (error) {
         console.error('Error fetching user data:', error)
+        return { users: [], total: 0 }
     }
 }
